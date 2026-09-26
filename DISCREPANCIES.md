@@ -188,6 +188,34 @@ Each of these needs an answer that is not in the data. The reconciled table foll
 - **Question:**
   > Is this daily report meant to show orders taken (order date) or revenue recognized (shipment or delivery date)?
 
+## Preventing this next month
+
+### Checks that would catch each issue automatically
+
+Run after both extracts land. Each check fails loudly instead of letting the number through. Checks marked *built* are already enforced by `reconcile.py`.
+
+| Check | Catches |
+|---|---|
+| Every storefront channel label is in the mapping (*built*) | R1, and any new label such as a new ad network |
+| Every currency is USD or CAD (*built*) | New currencies arriving without a rate |
+| `order_id` is unique in the storefront extract | R2 |
+| Finance has 5 rows for every day, including zero rows | R4 |
+| Recomputing finance from the storefront with the agreed rule leaves no difference in any day and channel above USD 0.01 (*built* as the bridge's `unexplained` column) | O2, R2, R3, and any new cause |
+| The finance extract was pulled after the last day closed: its extract time is later than 23:59 on the last day, and the storefront's last order of that day is in finance | R3 |
+| The CAD rate used differs from the reference rate by less than an agreed tolerance | O1 |
+| Order IDs have no gaps, and orders just outside the ID range are checked for dates inside the period | R7 |
+| No refund exceeds its order's gross, and no cancelled order carries revenue | O2, O5 |
+| Totals for days already reported have not changed since the last run. Any change is listed as a restatement | O5 (late refunds), O2 (late cancellations) |
+
+### What I would change in how the extracts are produced
+
+1. **Build finance's report from the storefront orders**, order by order, with `order_id` kept. The two stop being separate sources that have to be reconciled, and any difference can be traced to an order in minutes.
+2. **Pull the extracts after the day closes**, in a stated time zone, and record the extract time in the file. This removes R3.
+3. **Add the missing fields to the order export:** placed, paid, cancelled and refunded timestamps, plus tax, shipping and discount amounts, and the USD amount actually settled. This answers O5, O6, O7 and O1 from data instead of from people.
+4. **Replace the free-text channel with a controlled list** that includes a paid or organic flag. This removes R1, O3 and O4.
+5. **Write down the revenue definition** once the client answers O1 to O8, and keep it in the code with a version. The CFO's number and the analyst's number then come from the same rule.
+6. **Report late changes as adjustments, not silent restatements.** A refund or cancellation after a day is reported becomes a new dated line, so past totals stay stable.
+
 ## Limitations
 
 - Test orders that were never flagged cannot be detected (see R5).
