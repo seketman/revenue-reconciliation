@@ -27,7 +27,7 @@ Period: 2026-01-06 to 2026-02-04 (30 days). Sources: `orders.csv` (storefront, o
 
 **What I stand behind:** the reconciled daily figures under the definition above, and the explanation of the gap to finance. No part of the gap is unexplained.
 
-**What I cannot give you yet:** nine questions that only the business can answer. Until they are answered, the total above is a figure on stated assumptions, not a final one:
+**What I cannot give you yet:** nine questions that only the business can answer (12 one-line asks, because O2, O5 and O6 each have two parts). Until they are answered, the total above is a figure on stated assumptions, not a final one:
 
 | Open question | Orders affected | Can it move the total? | By how much (USD) |
 |---|---:|---|---|
@@ -63,7 +63,7 @@ Finance's figures can be reproduced from the storefront extract cell by cell. Th
 - channel labels mapped to five buckets (see R1)
 - duplicate rows counted as many times as they appear
 
-With this rule, 137 of the 150 day-by-channel cells match to the cent. The remaining 13 are each explained by specific orders (R2, R3 and O2). The finance process is therefore consistent with the storefront, and the differences come from a few identifiable exceptions rather than from a different method.
+With this rule, 137 of the 150 day-by-channel cells match to the cent. The remaining 13 are each explained by specific orders: 10 by cancelled orders finance counted (O2) and 3 by the truncated last day (R3). Compared with the reconciled table, which counts each order once, 17 cells differ: those 13 plus 4 cells where finance counts a duplicate twice (R2). `output/finance_bridge.csv` shows all 17. The finance process is therefore consistent with the storefront, and the differences come from a few identifiable exceptions rather than from a different method.
 
 ## Resolved discrepancies
 
@@ -84,7 +84,7 @@ These are settled from the data alone, or with a definition I state and apply.
 ### R2. Duplicate order rows, counted twice by finance
 
 - **What:** 5 orders appear twice, with every field identical: E76-1097, E76-1184, E76-1212, E76-1365 and E76-1658. Four of them are paid orders.
-- **How I know:** finance's Direct figure for 01-13 and Paid Search figure for 02-02 only match if the duplicate is counted twice.
+- **How I know:** the four paid duplicates fall in four cells (01-10 Other, 01-13 Direct, 01-14 Other, 02-02 Paid Search), and finance's figure for each matches only if the duplicate is counted twice.
 - **What I did:** counted each order once, because an order ID identifies one order. This removes USD 231.96 that finance double counted. The fifth duplicate, E76-1365, is also a cancelled order. Finance counts it once, not twice, so it appears in O2 (cancelled orders), not in this amount.
 
 ### R3. Finance's last day is incomplete
