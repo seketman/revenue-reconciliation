@@ -11,7 +11,7 @@
 --     pattern by date, channel or currency (open question Q-CANCELLED).
 --   - The export stops on 2026-02-04 between 21:35 and 22:10 UTC.
 --   - CAD is converted at a fixed 0.74 on every day (open question Q-FX).
-CREATE OR REPLACE VIEW finance_observed_behaviour AS
+CREATE OR REPLACE VIEW finance_observed_behavior AS
 SELECT
     0.74::DECIMAL(10, 6) AS finance_fx_rate,
     [
@@ -23,7 +23,7 @@ SELECT
 -- Converts at finance's rate: every cause below is valued the way finance saw it.
 CREATE OR REPLACE MACRO to_usd(amount, currency) AS
     CASE currency
-        WHEN 'CAD' THEN amount * (SELECT finance_fx_rate FROM finance_observed_behaviour)
+        WHEN 'CAD' THEN amount * (SELECT finance_fx_rate FROM finance_observed_behavior)
         ELSE amount
     END;
 
@@ -39,7 +39,7 @@ GROUP BY ALL;
 CREATE OR REPLACE VIEW cause_cancelled AS
 SELECT order_date, finance_channel(source_channel) AS channel,
        SUM(to_usd(gross - refund, currency)) AS amount
-FROM excl_test, finance_observed_behaviour
+FROM excl_test, finance_observed_behavior
 WHERE status = 'cancelled' AND list_contains(cancelled_ids_in_finance, order_id)
 GROUP BY ALL;
 
@@ -61,7 +61,7 @@ CREATE OR REPLACE VIEW cause_cutoff AS
 SELECT order_date, channel,
        ROUND(COALESCE(SUM(to_usd(net_native, currency)) FILTER (WHERE created_utc < finance_cutoff_utc), 0), 2)
            - ROUND(SUM(to_usd(net_native, currency)), 2) AS amount
-FROM channel_mapped, finance_observed_behaviour
+FROM channel_mapped, finance_observed_behavior
 WHERE order_date = finance_cutoff_utc::DATE
 GROUP BY ALL;
 

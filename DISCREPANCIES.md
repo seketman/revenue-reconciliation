@@ -14,7 +14,7 @@ Period: 2026-01-06 to 2026-02-04 (30 days). Sources: `orders.csv` (storefront, o
 | Orders missing from finance on the last day (extract cut off at about 22:00 UTC) | +711.75 |
 | **Reconciled** | **76,393.86** |
 
-**Definition used: net order revenue, by order date.** Order gross minus refunds, in USD, dated on the order's UTC calendar day. Test orders and cancelled orders are excluded, and each order is counted once. CAD orders are converted at 0.74, the rate finance uses. This is the same basis finance reports on. It is not necessarily recognised revenue for the accounts, which usually follows shipment or delivery rather than the order date (see O8).
+**Definition used: net order revenue, by order date.** Order gross minus refunds, in USD, dated on the order's UTC calendar day. Test orders and cancelled orders are excluded, and each order is counted once. CAD orders are converted at 0.74, the rate finance uses. This is the same basis finance reports on. It is not necessarily recognized revenue for the accounts, which usually follows shipment or delivery rather than the order date (see O8).
 
 | Channel | Finance | Reconciled | Difference |
 |---|---:|---:|---:|
@@ -32,7 +32,7 @@ Period: 2026-01-06 to 2026-02-04 (30 days). Sources: `orders.csv` (storefront, o
 | Open question | Can it move the total? | By how much |
 |---|---|---|
 | O6. Does `gross` include tax, shipping or discounts? | Yes | Down by roughly the tax rate, if tax is included |
-| O8. Is revenue recognised at order, shipment or delivery? | Yes, near the period edges | Unknown |
+| O8. Is revenue recognized at order, shipment or delivery? | Yes, near the period edges | Unknown |
 | O2. Were the 14 cancelled orders that finance counted charged? | Yes | Up to +1,389.34 |
 | O1. Which CAD rate? | Yes | 142.65 for each 0.01 of rate |
 | O5. Refunds dated on the order or on the refund? | Yes, for refunds after 02-04 | Up to +2,703.13 |
@@ -180,13 +180,13 @@ Each of these needs an answer that is not in the data. The reconciled table foll
 - **Question:**
   > In the order export, is "created_at" the time the order was placed, or the time it was paid or last updated?
 
-### O8 (Q-RECOGNITION). When revenue is recognised
+### O8 (Q-RECOGNITION). When revenue is recognized
 
-- **What:** both sources date revenue on the day the order is placed. For the accounts, revenue is usually recognised when the goods are shipped or delivered. The two can differ for orders placed near the start or end of a period.
+- **What:** both sources date revenue on the day the order is placed. For the accounts, revenue is usually recognized when the goods are shipped or delivered. The two can differ for orders placed near the start or end of a period.
 - **What I did:** reported on order date, as finance does, and called the figure "net order revenue" rather than revenue.
 - **Who can answer:** CFO.
 - **Question:**
-  > Is this daily report meant to show orders taken (order date) or revenue recognised (shipment or delivery date)?
+  > Is this daily report meant to show orders taken (order date) or revenue recognized (shipment or delivery date)?
 
 ## Limitations
 
