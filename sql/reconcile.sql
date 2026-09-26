@@ -86,6 +86,12 @@ SELECT DISTINCT order_date, finance_channel(source_channel) AS channel
 FROM excl_test
 WHERE status = 'cancelled';
 
+-- Cells with a refunded test order, which suggests a real payment (O9, Q-TEST-REFUND).
+CREATE OR REPLACE VIEW test_refund_cells AS
+SELECT DISTINCT order_date, finance_channel(source_channel) AS channel
+FROM deduplicated
+WHERE is_test AND refund > 0;
+
 CREATE OR REPLACE VIEW daily_aggregation AS
 SELECT
     order_date,
@@ -111,9 +117,11 @@ SELECT
         CASE WHEN cc.order_date IS NOT NULL THEN 'Q-CANCELLED' END,
         CASE WHEN a.has_tiktok THEN 'Q-TIKTOK' END,
         CASE WHEN a.has_facebook THEN 'Q-FB-ORGANIC' END,
-        CASE WHEN a.has_refund THEN 'Q-REFUND-DATE' END
+        CASE WHEN a.has_refund THEN 'Q-REFUND-DATE' END,
+        CASE WHEN tr.order_date IS NOT NULL THEN 'Q-TEST-REFUND' END
     ], x -> x IS NOT NULL), ';') AS open_questions
 FROM calendar_grid g
 LEFT JOIN daily_aggregation a USING (order_date, channel)
 LEFT JOIN cancelled_cells cc USING (order_date, channel)
+LEFT JOIN test_refund_cells tr USING (order_date, channel)
 ORDER BY date, channel;

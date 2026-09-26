@@ -27,15 +27,16 @@ Period: 2026-01-06 to 2026-02-04 (30 days). Sources: `orders.csv` (storefront, o
 
 **What I stand behind:** the reconciled daily figures under the definition above, and the explanation of the gap to finance. No part of the gap is unexplained.
 
-**What I cannot give you yet:** eight questions that only the business can answer. Until they are answered, the total above is a figure on stated assumptions, not a final one:
+**What I cannot give you yet:** nine questions that only the business can answer. Until they are answered, the total above is a figure on stated assumptions, not a final one:
 
 | Open question | Can it move the total? | By how much |
 |---|---|---|
 | O6. Does `gross` include tax, shipping or discounts? | Yes | Down by roughly the tax rate, if tax is included |
 | O8. Is revenue recognized at order, shipment or delivery? | Yes, near the period edges | Unknown |
-| O2. Were the 14 cancelled orders that finance counted charged? | Yes | Up to +1,389.34 |
+| O2. Were any cancelled orders charged? | Yes | Up to +1,389.34 for the 14 finance counts, up to +2,905.60 if all 25 were charged |
 | O1. Which CAD rate? | Yes | 142.65 for each 0.01 of rate |
 | O5. Refunds dated on the order or on the refund? | Yes, for refunds after 02-04 | Up to +2,703.13 |
+| O9. Should test order E76-1588, which was partly refunded, count? | Yes | Up to +65.92 |
 | O7. What does `created_at` record? | Only at the period edges | Small |
 | O3. TikTok in "Other" or "Paid Social"? | No, it moves 10,414.39 between channels | 0 |
 | O4. Is the `facebook` label organic traffic? | No, it may move 11,686.46 out of Paid Social | 0 |
@@ -102,6 +103,7 @@ These are settled from the data alone, or with a definition I state and apply.
 - **How I know:** finance's figures match only when these orders are excluded.
 - **What I did:** excluded them.
 - **Limitation:** test orders that were never flagged cannot be detected from the data. I found no suspicious amounts, such as very small or repeated values.
+- **Exception:** one test order, E76-1588, carries a partial refund, which suggests real money moved. That order is an open question (O9).
 
 ### R6. Time zone (checked, not a discrepancy)
 
@@ -129,12 +131,14 @@ Each of these needs an answer that is not in the data. The reconciled table foll
 
 ### O2 (Q-CANCELLED). Cancelled orders that finance counted as revenue
 
-- **What:** 25 orders are cancelled (not counting test orders). Finance counts 14 of them (USD 1,389.34) and leaves out the other 11. I found no pattern by date, channel or currency.
+- **What:** 25 orders are cancelled (not counting test orders). Finance counts 14 of them (USD 1,389.34) and leaves out the other 11 (USD 1,516.26). I found no pattern by date, channel or currency.
 - **How I know:** each of the 10 cells where finance is higher than the storefront matches, to the cent, the value of one or two cancelled orders in that cell.
 - **What I did:** excluded all cancelled orders. The storefront shows no refund on any of them, so either they were never charged, or they were charged and then cancelled without the money being returned.
 - **Who can answer:** whoever can look up payments in the payment processor.
 - **Question:**
   > Finance's report counts these 14 cancelled orders as revenue: E76-1229, 1262, 1297, 1301, 1341, 1351, 1362, 1365, 1370, 1388, 1469, 1548, 1569, 1574 (USD 1,389.34 in total). Were any of them charged and not refunded?
+
+  > Same question for the other 11 cancelled orders (USD 1,516.26), which finance leaves out: were any of them charged and not refunded?
 
 ### O3 (Q-TIKTOK). TikTok reported under "Other"
 
@@ -188,6 +192,15 @@ Each of these needs an answer that is not in the data. The reconciled table foll
 - **Question:**
   > Is this daily report meant to show orders taken (order date) or revenue recognized (shipment or delivery date)?
 
+### O9 (Q-TEST-REFUND). A test order that was partly refunded
+
+- **What:** E76-1588 (facebook, 2026-01-30, USD 131.84) is flagged as a test order but has a USD 65.92 refund. Refunding a test order suggests a real customer paid. It is the only test order with a refund.
+- **What I did:** excluded it, like every other test order, as finance does. The affected row carries `Q-TEST-REFUND`.
+- **Impact:** up to +65.92 (gross minus refund) in Paid Social on 2026-01-30.
+- **Who can answer:** whoever owns the storefront.
+- **Question:**
+  > Order E76-1588 is flagged as a test but was partly refunded (USD 65.92). Was it a real customer order?
+
 ## Preventing this next month
 
 ### Checks that would catch each issue automatically
@@ -213,7 +226,7 @@ Run after both extracts land. Each check fails loudly instead of letting the num
 2. **Pull the extracts after the day closes**, in a stated time zone, and record the extract time in the file. This removes R3.
 3. **Add the missing fields to the order export:** placed, paid, cancelled and refunded timestamps, plus tax, shipping and discount amounts, and the USD amount actually settled. This answers O5, O6, O7 and O1 from data instead of from people.
 4. **Replace the free-text channel with a controlled list** that includes a paid or organic flag. This removes R1, O3 and O4.
-5. **Write down the revenue definition** once the client answers O1 to O8, and keep it in the code with a version. The CFO's number and the analyst's number then come from the same rule.
+5. **Write down the revenue definition** once the client answers O1 to O9, and keep it in the code with a version. The CFO's number and the analyst's number then come from the same rule.
 6. **Report late changes as adjustments, not silent restatements.** A refund or cancellation after a day is reported becomes a new dated line, so past totals stay stable.
 
 ## Limitations

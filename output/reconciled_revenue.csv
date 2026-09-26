@@ -123,7 +123,7 @@ date,channel,revenue_usd,cad_net_native,orders,open_questions
 2026-01-30,Email,171.18,0.00,1,
 2026-01-30,Other,726.35,284.59,7,Q-FX;Q-TIKTOK
 2026-01-30,Paid Search,104.06,0.00,1,
-2026-01-30,Paid Social,717.49,0.00,6,Q-REFUND-DATE
+2026-01-30,Paid Social,717.49,0.00,6,Q-REFUND-DATE;Q-TEST-REFUND
 2026-01-31,Direct,359.75,0.00,2,
 2026-01-31,Email,711.53,93.20,7,Q-FX
 2026-01-31,Other,270.89,0.00,3,Q-TIKTOK
