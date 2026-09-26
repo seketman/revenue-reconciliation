@@ -14,7 +14,7 @@ Period: 2026-01-06 to 2026-02-04 (30 days). Sources: `orders.csv` (storefront, o
 | Orders missing from finance on the last day (extract cut off at about 22:00 UTC) | +711.75 |
 | **Reconciled** | **76,393.86** |
 
-**Definition of revenue used:** order gross minus refunds, in USD, dated on the order's UTC calendar day. Test orders and cancelled orders are excluded, and each order is counted once. CAD orders are converted at 0.74, the rate finance uses.
+**Definition of revenue used:** order gross minus refunds, in USD, dated on the order's UTC calendar day. Test orders and cancelled orders are excluded, and each order is counted once. CAD orders are converted at 0.74, the rate finance uses. Each day-by-channel figure is rounded to the cent, and totals are sums of those rounded figures, the same way finance reports. Rounding the unrounded total once would give a result within USD 0.02 of this one.
 
 | Channel | Finance | Reconciled | Difference |
 |---|---:|---:|---:|
