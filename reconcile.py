@@ -4,6 +4,7 @@ Usage: uv run reconcile.py [--fx-rate 0.74]
 """
 
 import argparse
+import os
 from pathlib import Path
 
 import duckdb
@@ -22,6 +23,7 @@ def main() -> None:
     parser.add_argument("--fx-rate", type=float, default=0.74, help="CAD to USD rate")
     args = parser.parse_args()
 
+    os.chdir(ROOT)  # SQL reads data/*.csv relative to the project root
     con = duckdb.connect()
     con.execute(f"SET VARIABLE fx_rate = {args.fx_rate}::DECIMAL(10, 6)")
     run_sql(con, "reconcile.sql")

@@ -2,8 +2,8 @@
 --
 -- Revenue definition: gross - refund of paid, non-test orders, dated by the
 -- order's UTC calendar day, converted to USD at a fixed CAD rate.
--- Each view applies one decision and names the discrepancy it addresses
--- (numbers refer to DISCREPANCIES.md).
+-- Each view applies one decision and cites the item it addresses in
+-- DISCREPANCIES.md (R = resolved, O = open question).
 --
 -- Expects the variable `fx_rate` to be set by the caller (default 0.74).
 
@@ -28,23 +28,23 @@ SELECT
     revenue_usd::DECIMAL(12, 2) AS revenue_usd
 FROM read_csv('data/finance_export.csv', all_varchar = true);
 
--- Exact duplicate rows are counted once (discrepancy: duplicate order rows).
+-- Exact duplicate rows are counted once (R2).
 CREATE OR REPLACE VIEW deduplicated AS
 SELECT DISTINCT * FROM typed_orders;
 
--- Test orders are not revenue (discrepancy: test orders; finance agrees).
+-- Test orders are not revenue (R5).
 CREATE OR REPLACE VIEW excl_test AS
 SELECT * FROM deduplicated WHERE NOT is_test;
 
--- Cancelled orders are not revenue (discrepancy: cancelled orders; open question Q-CANCELLED).
+-- Cancelled orders are not revenue (O2, Q-CANCELLED).
 CREATE OR REPLACE VIEW excl_cancelled AS
 SELECT * FROM excl_test WHERE status = 'paid';
 
--- Refunds are netted on the order date; no refund date exists (open question Q-REFUND-DATE).
+-- Refunds are netted on the order date; no refund date exists (O5, Q-REFUND-DATE).
 CREATE OR REPLACE VIEW net_of_refunds AS
 SELECT *, gross - refund AS net_native FROM excl_cancelled;
 
--- CAD converted at a fixed rate, as finance does (open question Q-FX).
+-- CAD converted at a fixed rate, as finance does (O1, Q-FX).
 CREATE OR REPLACE VIEW usd_converted AS
 SELECT
     *,
@@ -55,8 +55,8 @@ SELECT
     END AS net_usd
 FROM net_of_refunds;
 
--- Storefront channel tags mapped to finance channels (discrepancy: channel taxonomy;
--- open questions Q-TIKTOK and Q-FB-ORGANIC). An unmapped tag fails the run.
+-- Storefront channel tags mapped to finance channels (R1;
+-- open questions O3 Q-TIKTOK and O4 Q-FB-ORGANIC). An unmapped tag fails the run.
 CREATE OR REPLACE MACRO finance_channel(source_channel) AS
     CASE source_channel
         WHEN 'facebook' THEN 'Paid Social'
@@ -74,7 +74,7 @@ CREATE OR REPLACE VIEW channel_mapped AS
 SELECT *, finance_channel(source_channel) AS channel FROM usd_converted;
 
 -- Full calendar x channel grid, so days without orders show 0
--- (discrepancy: finance omits zero rows).
+-- (R4).
 CREATE OR REPLACE VIEW calendar_grid AS
 SELECT d::DATE AS order_date, channel
 FROM generate_series(DATE '2026-01-06', DATE '2026-02-04', INTERVAL 1 DAY) AS t(d)

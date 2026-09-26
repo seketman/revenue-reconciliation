@@ -29,7 +29,7 @@ Period: 2026-01-06 to 2026-02-04 (30 days). Sources: `orders.csv` (storefront, o
 
 **What I cannot give you yet:** seven questions only the business can answer. Two of them could move the total: which currency rate to use (each 0.01 of CAD rate moves revenue by USD 142.65) and whether the 14 cancelled orders were actually charged (USD 1,389.34). Two others move revenue between channels, not the total. The three remaining concern definitions. The questions are in the last section, written to be answered in one line.
 
-Deliverables: `output/reconciled_revenue.csv` (daily revenue by channel) and `output/finance_bridge.csv` (the same days and channels, with finance's figure and the cause of every difference). Each row of the reconciled table lists the open questions that affect it in the `open_questions` column.
+Deliverables: `output/reconciled_revenue.csv` (daily revenue by channel) and `output/finance_bridge.csv` (the same days and channels, with finance's figure and the cause of every difference). Each row of the reconciled table lists the open questions that affect it in the `open_questions` column, using the codes in the question headings below (for example `Q-FX`). Q-CANCELLED marks every cell that had a cancelled order. Q-GROSS and Q-CREATED-AT affect every cell, so they are not listed per row.
 
 ## How the two sources relate
 
@@ -98,7 +98,7 @@ These are settled from the data alone, or with a definition I state and apply.
 
 Each of these needs a decision that is not in the data. The reconciled table follows finance's current practice for each one, or excludes the item when that is the safer default, and says so. None of these has been settled by guessing.
 
-### O1. Currency rate for CAD orders
+### O1 (Q-FX). Currency rate for CAD orders
 
 - **What:** 123 paid orders (CAD 14,264.62 net) are in Canadian dollars. Finance converts them all at a flat 0.74. Neither file contains an exchange rate.
 - **What I did:** used 0.74 so the figures stay comparable with finance. The `cad_net_native` column keeps the CAD amount, so the table can be recomputed at another rate (`uv run reconcile.py --fx-rate <rate>`).
@@ -106,7 +106,7 @@ Each of these needs a decision that is not in the data. The reconciled table fol
 - **Question:**
   > Finance converts all CAD orders at a flat 0.74 for the whole period. Should revenue use that flat rate, or a daily rate? If daily, from which source?
 
-### O2. Cancelled orders that finance counted as revenue
+### O2 (Q-CANCELLED). Cancelled orders that finance counted as revenue
 
 - **What:** 25 orders are cancelled (not counting test orders). Finance counts 14 of them (USD 1,389.34) and leaves out the other 11. I found no pattern by date, channel or currency.
 - **How I know:** each of the 10 cells where finance is higher than the storefront matches, to the cent, the value of one or two cancelled orders in that cell.
@@ -114,35 +114,35 @@ Each of these needs a decision that is not in the data. The reconciled table fol
 - **Question:**
   > Finance's report counts these 14 cancelled orders as revenue: E76-1229, 1262, 1297, 1301, 1341, 1351, 1362, 1365, 1370, 1388, 1469, 1548, 1569, 1574 (USD 1,389.34 in total). Were any of them charged and not refunded?
 
-### O3. TikTok reported under "Other"
+### O3 (Q-TIKTOK). TikTok reported under "Other"
 
 - **What:** finance puts TikTok orders (USD 10,414.39) in Other together with affiliate, not in Paid Social.
 - **What I did:** kept finance's mapping, so the channel totals stay comparable. Affected cells carry `Q-TIKTOK`.
 - **Question:**
   > TikTok orders (USD 10,414.39 this period) are currently reported under "Other", not "Paid Social". Is that intentional?
 
-### O4. Three Facebook labels, possibly paid and organic mixed
+### O4 (Q-FB-ORGANIC). Three Facebook labels, possibly paid and organic mixed
 
 - **What:** the storefront uses `facebook`, `Facebook Ads` and `fb` at the same time, every day of the period, so this is not a rename. Finance puts all three in Paid Social. If `facebook` is unpaid (organic) traffic, Paid Social is overstated by USD 11,686.46.
 - **What I did:** kept all three in Paid Social, as finance does. Affected cells carry `Q-FB-ORGANIC`.
 - **Question:**
   > The storefront tags Facebook orders three ways: "facebook", "Facebook Ads" and "fb". Are all three paid ads, or is any of them unpaid (organic) traffic?
 
-### O5. Refunds are dated on the order, not on the refund
+### O5 (Q-REFUND-DATE). Refunds are dated on the order, not on the refund
 
 - **What:** 37 paid orders carry refunds (USD 2,703.13). Both sources subtract each refund on the day the order was placed. Neither file has a refund date. As a result, a day that has already been reported goes down whenever a later refund arrives.
 - **What I did:** followed the current practice. Affected cells carry `Q-REFUND-DATE`.
 - **Question:**
   > Should a refund reduce revenue on the day of the original order (current practice, which changes past days), or on the day of the refund? If the latter, can the storefront export include the refund date?
 
-### O6. What the `gross` amount contains
+### O6 (Q-GROSS). What the `gross` amount contains
 
 - **What:** neither file says whether `gross` includes sales tax, shipping or discounts. This affects every figure in both sources.
 - **What I did:** used `gross` as it comes.
 - **Question:**
   > Does the "gross" amount in the order export include sales tax, shipping, or discounts? Which of those should count as revenue?
 
-### O7. What `created_at` represents
+### O7 (Q-CREATED-AT). What `created_at` represents
 
 - **What:** order IDs are not in time order. Some orders are up to 30 positions away from their place in time order, about one day of sales. If `created_at` is the payment time or the last-update time rather than the order time, some orders are dated on the wrong day, in both sources equally.
 - **What I did:** used `created_at` as the order date.
