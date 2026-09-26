@@ -29,20 +29,22 @@ Period: 2026-01-06 to 2026-02-04 (30 days). Sources: `orders.csv` (storefront, o
 
 **What I cannot give you yet:** nine questions that only the business can answer. Until they are answered, the total above is a figure on stated assumptions, not a final one:
 
-| Open question | Can it move the total? | By how much |
-|---|---|---|
-| O6. Does `gross` include tax, shipping or discounts? | Yes | Down by roughly the tax rate, if tax is included |
-| O8. Is revenue recognized at order, shipment or delivery? | Yes, near the period edges | Unknown |
-| O2. Were any cancelled orders charged? | Yes | Up to +1,389.34 for the 14 finance counts, up to +2,905.60 if all 25 were charged |
-| O1. Which CAD rate? | Yes | 142.65 for each 0.01 of rate |
-| O5. Refunds dated on the order or on the refund? | Yes, for refunds after 02-04 | Up to +2,703.13 |
-| O9. Should test order E76-1588, which was partly refunded, count? | Yes | Up to +65.92 |
-| O7. What does `created_at` record? | Only at the period edges | Small |
-| O3. TikTok in "Other" or "Paid Social"? | No, it moves 10,414.39 between channels | 0 |
-| O4. Is the `facebook` label organic traffic? | No, it may move 11,686.46 out of Paid Social | 0 |
+| Open question | Orders affected | Can it move the total? | By how much (USD) |
+|---|---:|---|---|
+| O6. Does `gross` include tax, shipping or discounts? | All 699 | Yes | Down by roughly the tax rate, if tax is included |
+| O8. Is revenue recognized at order, shipment or delivery? | All 699 | Yes, near the period edges | Unknown |
+| O2. Were any cancelled orders charged? | 14 + 11 | Yes | Up to +1,389.34 for the 14 finance counts, up to +2,905.60 if all 25 were charged |
+| O1. Which CAD rate? | 123 | Yes | 142.65 for each 0.01 of rate |
+| O5. Refunds dated on the order or on the refund? | 37 | Yes, for refunds after 02-04 | Up to +2,703.13 |
+| O9. Should test order E76-1588, which was partly refunded, count? | 1 | Yes | Up to +65.92 |
+| O7. What does `created_at` record? | All 699 | Only at the period edges | Small |
+| O3. TikTok in "Other" or "Paid Social"? | 95 | No, it moves 10,414.39 between channels | 0 |
+| O4. Is the `facebook` label organic traffic? | 106 | No, it may move 11,686.46 out of Paid Social | 0 |
+
+"All 699" means every paid, non-test order in the reconciled figure.
 
 **What you need to do:**
-1. Send the questions in the last section. Each one names who in the business can answer it.
+1. Send the questions. They are grouped by who can answer them, ready to forward, in "Message to send" below.
 2. If finance's figure for 2026-02-04 has already been reported, re-pull it. It is missing USD 711.75 (R3).
 
 Deliverables:
@@ -138,7 +140,7 @@ Each of these needs an answer that is not in the data. The reconciled table foll
 - **Question:**
   > Finance's report counts these 14 cancelled orders as revenue: E76-1229, 1262, 1297, 1301, 1341, 1351, 1362, 1365, 1370, 1388, 1469, 1548, 1569, 1574 (USD 1,389.34 in total). Were any of them charged and not refunded?
 
-  > Same question for the other 11 cancelled orders (USD 1,516.26), which finance leaves out: were any of them charged and not refunded?
+  > Same question for the other 11 cancelled orders (USD 1,516.26), which finance leaves out: E76-1009, 1095, 1121, 1141, 1267, 1440, 1441, 1448, 1560, 1642, 1716. Were any of them charged and not refunded?
 
 ### O3 (Q-TIKTOK). TikTok reported under "Other"
 
@@ -200,6 +202,42 @@ Each of these needs an answer that is not in the data. The reconciled table foll
 - **Who can answer:** whoever owns the storefront.
 - **Question:**
   > Order E76-1588 is flagged as a test but was partly refunded (USD 65.92). Was it a real customer order?
+
+## Message to send
+
+The same questions as O1 to O9, grouped by who can answer them. Within each group, the question that can move revenue most comes first. The code in brackets points to the full explanation above.
+
+> **Subject:** Revenue reconciliation, Jan 6 to Feb 4: 12 questions before we finalize
+>
+> Hi,
+>
+> The storefront and finance figures now reconcile to the cent: finance's USD 77,303.41 becomes USD 76,393.86 once duplicates, cancelled orders and a truncated last day are corrected. Before this becomes the final number, we need answers to the questions below. Each can be answered in one line. Please forward each group to the right person.
+>
+> **For the CFO**
+>
+> 1. Should shipping charged to customers count as revenue? *(O6; all 699 orders)*
+> 2. Is this daily report meant to show orders taken (order date) or revenue recognized (shipment or delivery date)? *(O8; all 699 orders)*
+> 3. Finance converts all CAD orders at a flat 0.74. Keep 0.74, or use the rate the payment processor actually settled at? *(O1; 123 orders; each 0.01 of rate moves revenue by USD 142.65)*
+> 4. Should a refund reduce revenue on the day of the original order (current practice, which changes past days), or on the day of the refund? *(O5; 37 orders, USD 2,703.13)*
+> 5. TikTok orders are reported under "Other", not "Paid Social". Is that intentional? *(O3; 95 orders, USD 10,414.39; moves between channels only)*
+>
+> **For whoever can look up payments in the payment processor**
+>
+> 6. Finance counts these 14 cancelled orders as revenue: E76-1229, 1262, 1297, 1301, 1341, 1351, 1362, 1365, 1370, 1388, 1469, 1548, 1569, 1574. Were any of them charged and not refunded? *(O2; USD 1,389.34)*
+> 7. Same question for the other 11 cancelled orders, which finance leaves out: E76-1009, 1095, 1121, 1141, 1267, 1440, 1441, 1448, 1560, 1642, 1716. *(O2; USD 1,516.26)*
+>
+> **For marketing**
+>
+> 8. The storefront tags Facebook orders three ways: "facebook", "Facebook Ads" and "fb". Are all three paid ads, or is any of them unpaid (organic) traffic? *(O4; 106 orders tagged "facebook", USD 11,686.46; moves between channels only)*
+>
+> **For whoever owns the storefront and its order export**
+>
+> 9. Does "gross" in the order export include sales tax, shipping, discounts, or amounts paid with gift cards or store credit? *(O6; all 699 orders)*
+> 10. Is "created_at" the time the order was placed, or the time it was paid or last updated? *(O7; all 699 orders)*
+> 11. Can the order export include the date each refund was issued? *(O5; 37 orders)*
+> 12. Order E76-1588 is flagged as a test but was partly refunded (USD 65.92). Was it a real customer order? *(O9; 1 order)*
+>
+> Thanks. Everything else is settled and documented, so these answers are all that stands between us and a final figure.
 
 ## Preventing this next month
 
